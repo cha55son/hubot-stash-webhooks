@@ -1,0 +1,26 @@
+{
+  "name": "hubot-stash-webhooks",
+  "description": "Hubot plugin to capture and post Atlassian Stash webhooks to chat.",
+  "version": "0.0.1",
+  "author": "Chason Choate <cha55son@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "stash",
+    "webhooks"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cha55son/hubot-stash-webhooks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cha55son/hubot-stash-webhooks/issues"
+  },
+  "dependencies": {
+    "coffee-script": "~1.6",
+    "ltx": ">= 0.9.0"
+  },
+  "devDependencies": { },
+  "main": "index.coffee"
+}
