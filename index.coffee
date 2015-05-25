@@ -49,9 +49,9 @@ module.exports = (robot) ->
 
     if process.env.DEBUG?
       webhook_name = 'webhook-' + Math.floor(Date.now() / 1000) + '.json'
-      fs.writeFile path.resolve(__dirname + '/../logs/' + webhook_name), JSON.stringify(req.body, null, 4), (err) ->
+      fs.writeFile path.resolve(__dirname + '/logs/' + webhook_name), JSON.stringify(req.body, null, 4), (err) ->
         return console.log(err) if err
-        robot.logger.info "Webhook data written to: logs/#{webhook_name}"
+        robot.logger.info "Stash webhook data written to: logs/#{webhook_name}"
 
     text = ''
     html = ''
@@ -67,14 +67,14 @@ module.exports = (robot) ->
       html_repo_link = "<a href='#{project_url}'>#{message.repository.project.name}</a>/<a href='#{repo_url}'>#{message.repository.name}</a>" 
 
       if action == 'add'
-        text += "Created #{type} #{url} on #{repo_name}"
-        html += "Created #{type} <a href='#{url}'>#{name}</a> on #{html_repo_link}"
+        text += "➕ Created #{type} #{url} on #{repo_name}"
+        html += "➕ Created #{type} <a href='#{url}'>#{name}</a> on #{html_repo_link}"
       else if action == 'delete'
-        text += "Deleted #{type} #{name} on #{repo_name}"
-        html += "Deleted #{type} <em>#{name}</em> on #{html_repo_link}"
+        text += "➖ Deleted #{type} #{name} on #{repo_name}"
+        html += "➖ Deleted #{type} <em>#{name}</em> on #{html_repo_link}"
       else if action == 'update'
-        text += "Updated branch #{name} on #{repo_name}"
-        html += "Updated branch <a href='#{url}'>#{name}</a> on #{html_repo_link}"
+        text += "➜ Updated branch #{name} on #{repo_name}"
+        html += "➜ Updated branch <a href='#{url}'>#{name}</a> on #{html_repo_link}"
       else
         robot.logger.error "Do not recognize ref action '#{action}'"
         robot.logger.error json
