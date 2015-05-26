@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "coffee-script": "~1.6",
-    "ltx": ">= 0.9.0"
+    "ltx": ">= 0.9.0",
+    "sanitize-html": "~1.6.1"
   },
   "devDependencies": { },
   "main": "index.coffee"

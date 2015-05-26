@@ -25,6 +25,7 @@
 ltx = require 'ltx'
 path = require 'path'
 fs = require 'fs'
+sanitize = require 'sanitize-html'
 
 module.exports = (robot) ->
   STASH_URL   = process.env.STASH_HOST_URL
@@ -87,10 +88,10 @@ module.exports = (robot) ->
         subset = message.changesets.values.slice(0, 3)
         subset.forEach (changeset, i, arr) ->
           user_link = "#{STASH_URL}/users/#{changeset.toCommit.author.emailAddress.split('@')[0]}"
-          text += "#{changeset.toCommit.author.name} - #{changeset.toCommit.message} #{changeset.links.self}"
+          text += "#{changeset.toCommit.author.name} - #{sanitize(changeset.toCommit.message)} #{changeset.links.self[0].href}"
           text += "\n" unless i == arr.length - 1
           # Replace newlines with <br/>. 
-          msg = changeset.toCommit.message.replace(/\n/g, "<br/>")
+          msg = sanitize(changeset.toCommit.message).replace(/\n/g, "<br/>")
           # Replace JIRA issues with links.
           if JIRA_URL
             msg = msg.replace /([a-zA-Z]{2,10}-[0-9]+)/g, (match, p1) ->
@@ -105,7 +106,7 @@ module.exports = (robot) ->
 
     # Build the HTML XMPP response
     message = "<message>" +
-                "<body>#{text}</body>" +
+                "<body>#{sanitize(text)}</body>" +
                 "<html xmlns='http://jabber.org/protocol/xhtml-im'>" + 
                   "<body xmlns='http://www.w3.org/1999/xhtml'>#{html}</body>" +
                 "</html>" + 
