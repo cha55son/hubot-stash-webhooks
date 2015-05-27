@@ -59,7 +59,7 @@ module.exports = (robot) ->
     project_url = "#{STASH_URL}/projects/#{message.repository.project.key}/"
     repo_url = "#{project_url}repos/#{message.repository.slug}/"
 
-    message.refChanges.forEach (ref) ->
+    message.refChanges.forEach (ref, i, arr) ->
       action = ref.type.toLowerCase()
       name = ref.refId.replace('refs/tags/', '').replace('refs/heads/', '')
       url = "#{repo_url}commits?until=#{name}"
@@ -86,23 +86,25 @@ module.exports = (robot) ->
           html += '<br/>'
           text += "\n"
         subset = message.changesets.values.slice(0, 3)
-        subset.forEach (changeset, i, arr) ->
+        subset.forEach (changeset, j, arr) ->
           user_link = "#{STASH_URL}/users/#{changeset.toCommit.author.emailAddress.split('@')[0]}"
           text += "#{changeset.toCommit.author.name} - #{sanitize(changeset.toCommit.message)} #{changeset.links.self[0].href}"
-          text += "\n" unless i == arr.length - 1
+          text += "\n" unless j == arr.length - 1
           # Replace newlines with <br/>. 
-          msg = sanitize(changeset.toCommit.message).replace(/\n/g, "<br/>")
+          msg = sanitize(changeset.toCommit.message).replace(/\n/g, "<br/>    ")
           # Replace JIRA issues with links.
           if JIRA_URL
             msg = msg.replace /([a-zA-Z]{2,10}-[0-9]+)/g, (match, p1) ->
               "<a href='#{JIRA_URL}/browse/#{match}'>#{match}</a>" 
           html += "<a href='#{user_link}'>#{changeset.toCommit.author.name}</a> <em>#{msg}</em> " +
                   "(<a href='#{changeset.links.self[0].href}'>#{changeset.toCommit.displayId}</a>)"
-          html += "<br/>" unless i == arr.length - 1
+          html += "<br/>" unless j == arr.length - 1
         if message.changesets.values.length > subset.length
           left = message.changesets.values.length - subset.length
           text += "\nand #{left} more commit#{ if left == 1 then '' else 's' }"
           html += "<br/><em>and #{left} more commit#{ if left == 1 then '' else 's' }</em>"
+      text += "\n"    unless i == arr.length - 1
+      html += "<br/>" unless i == arr.length - 1
 
     # Build the HTML XMPP response
     message = "<message>" +
